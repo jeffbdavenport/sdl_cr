@@ -46,17 +46,18 @@ module SDL
     def target_supported?
       ret = LibSDL.render_target_supported(self, texture)
       raise Error.new("SDL_RenderTargetSupported") unless ret == 0
+      ret
     end
 
-    def target=(texture = nil)
+    def target=(texture : Texture)
       ret = LibSDL.set_render_target(self, texture)
-      raise Error.new("SDL_SetRenderTarget") unless ret == 0
+      # raise Error.new("SDL_SetRenderTarget") unless ret == 0
+      ret
     end
 
     def target
       texture = LibSDL.get_render_target(self)
-      raise Error.new("SDL_SetRenderTarget") unless ret == 0
-      texture ? Texture.new(texture) : nil
+      Texture.new(texture)
     end
 
     def logical_size=(xy)
@@ -236,9 +237,9 @@ module SDL
       copy(Texture.from(surface, self), srcrect, dstrect, angle, center, flip)
     end
 
-    def read_pixels(rect : Rect, format : PixelFormat, buffer : Bytes)
+    def read_pixels(rect : Rect, format : PixelFormat, surface : LibSDL::Surface*)
       pitch = rect.w * format.bytes_per_pixel
-      ret = LibSDL.render_read_pixels(self, pointerof(rect), format.format, buffer, pitch)
+      ret = LibSDL.render_read_pixels(@renderer, pointerof(rect), format.format, surface.value.pixels, pitch)
       raise SDL::Error.new("SDL_RenderReadPixels") unless ret == 0
     end
 

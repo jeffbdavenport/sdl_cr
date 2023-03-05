@@ -301,12 +301,12 @@ module SDL
 
     # Ignores an event type. They will no longer be pushed to the queue event.
     def self.ignore(type : Type) : Nil
-      LibSDL.event_state(type, LibSDL::EventState::IGNORE)
+      LibSDL.event_state(type, LibSDL::IGNORE)
     end
 
     # Returns true if an event type is ignored.
     def self.ignored?(type : Type)
-      LibSDL.event_state(type, LibSDL::EventState::QUERY) == LibSDL::EventState::IGNORE
+      LibSDL.event_state(type, LibSDL::EventState::QUERY) == LibSDL::IGNORE
     end
 
     # Enables an event type. They will be pushed to the event queue.
