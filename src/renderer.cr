@@ -118,6 +118,11 @@ module SDL
       Color.new(r, g, b, a)
     end
 
+    def draw_geometry(tex : Texture?, vertices : Array, indices : Array)
+      ret = LibSDL.render_draw_geometry(self, tex, vertices, vertices.size, indices, indices.size)
+      raise Error.new("SDL_RenderDrawGeometry") unless ret == 0
+    end
+
     # Set the blen mode for drawing operations (fill, lines).
     def draw_blend_mode=(blend_mode : BlendMode)
       ret = LibSDL.set_render_draw_blend_mode(self, blend_mode)

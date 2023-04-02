@@ -18,6 +18,12 @@ module SDL
       new(texture)
     end
 
+    def size
+      ret = LibSDL.query_texture(self, out format, out access, out w, out h)
+      raise Error.new("SDL_QueryTexture") unless ret == 0
+      {w, h}
+    end
+
     def width
       ret = LibSDL.query_texture(self, out format, out access, out w, out h)
       raise Error.new("SDL_QueryTexture") unless ret == 0

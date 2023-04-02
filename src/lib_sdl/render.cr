@@ -48,6 +48,9 @@ lib LibSDL
     pixels : Void*
   end
 
+  alias FPoint = SDL::FPoint
+  alias Vertex = SDL::Vertex
+
   fun get_num_render_drivers = SDL_GetNumRenderDrivers : Int
   fun get_render_driver_info = SDL_GetRenderDriverInfo(index : Int, info : RendererInfo*) : Int
   fun create_window_and_renderer = SDL_CreateWindowAndRenderer(width : Int, height : Int, window_flags : UInt32, window : Window**, renderer : Renderer**) : Int
@@ -102,4 +105,5 @@ lib LibSDL
 
   fun gl_bind_texture = SDL_GL_BindTexture(texture : Texture*, texw : Float*, texh : Float*) : Int
   fun gl_unbind_texture = SDL_GL_UnbindTexture(texture : Texture*) : Int
+  fun render_draw_geometry = SDL_RenderGeometry(renderer : Renderer*, texture : Texture*, vertices : Vertex*, num_vertices : Int, indices : Int*, num_indices : Int) : Int
 end

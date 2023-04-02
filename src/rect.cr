@@ -1,3 +1,5 @@
+require "./color"
+
 module SDL
   @[Extern]
   struct Point
@@ -9,6 +11,32 @@ module SDL
     end
 
     def initialize(@x, @y)
+    end
+  end
+
+  @[Extern]
+  struct FPoint
+    property x : Float32
+    property y : Float32
+
+    def initialize(@x, @y)
+    end
+  end
+
+  @[Extern]
+  struct Vertex
+    @@color = Color.new(255, 255, 255)
+    property position : FPoint
+    property color : Color = @@color
+    property tex_coord : FPoint
+
+    def initialize(position : Tuple(Number, Number), tex_coord : Tuple(Number, Number))
+      @position = FPoint.new(*position.map(&.to_f32))
+      @tex_coord = FPoint.new(*tex_coord.map(&.to_f32))
+    end
+
+    def initialize(@position, @tex_coord, color : Color? = nil)
+      @color = color if color
     end
   end
 
