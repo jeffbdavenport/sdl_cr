@@ -3,7 +3,7 @@ module SDL
     class Music
       @music : Pointer(LibMix::Music)
 
-      def initialize(filename, type : Type? = nil)
+      def initialize(filename, type : LibMix::MusicType? = nil)
         @rwops = SDL::RWops.new(filename, "rb")
         if type
           @music = load_music_type(@rwops, type)
@@ -71,7 +71,7 @@ module SDL
       end
 
       private def load_music_type(rwops, type)
-        audio = LibMix.load_mus_type_rw(rwops, type.to_s, 1)
+        audio = LibMix.load_mus_type_rw(rwops, type, 1)
         raise SDL::Error.new("Mix_LoadMUSType_RW") unless audio
         audio
       end
