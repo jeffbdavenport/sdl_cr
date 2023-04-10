@@ -27,6 +27,12 @@ module SDL
       end
     end
 
+    def size
+      LibSDL.get_window_size(self, out width, out height)
+
+      return {width, height}
+    end
+
     def flags
       LibSDL.get_window_flags(self)
     end

@@ -105,5 +105,5 @@ lib LibSDL
 
   fun gl_bind_texture = SDL_GL_BindTexture(texture : Texture*, texw : Float*, texh : Float*) : Int
   fun gl_unbind_texture = SDL_GL_UnbindTexture(texture : Texture*) : Int
-  fun render_draw_geometry = SDL_RenderGeometry(renderer : Renderer*, texture : Texture*, vertices : Vertex*, num_vertices : Int, indices : Int*, num_indices : Int) : Int
+  fun render_draw_geometry = SDL_RenderGeometry(renderer : Renderer*, texture : Texture*, vertices : Vertex*, num_vertices : UInt, indices : UInt*, num_indices : UInt) : Int
 end
