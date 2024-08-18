@@ -12,14 +12,28 @@ module SDL
     end
 
     # Creates a `Texture` for *renderer* from a `Surface`.
-    def self.from(surface : Surface, renderer : Renderer)
+    def self.from(surface : LibSDL::Surface*, renderer : Renderer)
       texture = LibSDL.create_texture_from_surface(renderer, surface)
       raise Error.new("SDL_CreateTextureFromSurface") unless texture
+      LibSDL.free_surface surface
       new(texture)
     end
 
-    def size
+    def self.from(path : String, renderer : Renderer)
+      surface = LibIMG.load path
+      from(surface, renderer)
+    end
+
+    def self.from(img : Bytes, renderer : Renderer)
+      rwops = LibSDL.rw_from_mem(img, img.size)
+      surface = LibIMG.load_png_rw rwops
+      LibSDL.free_rw(rwops)
+      from(surface, renderer)
+    end
+
+    getter size : Tuple(Int32, Int32) do
       ret = LibSDL.query_texture(self, out format, out access, out w, out h)
+      # puts({w, h})
       raise Error.new("SDL_QueryTexture") unless ret == 0
       {w, h}
     end

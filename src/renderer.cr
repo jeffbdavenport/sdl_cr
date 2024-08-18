@@ -4,6 +4,8 @@ module SDL
   alias BlendMode = LibSDL::BlendMode
 
   class Renderer
+    @mutex = Mutex.new
+
     struct Info
       delegate flags, max_texture_width, max_texture_height, to: @info
 
@@ -43,15 +45,15 @@ module SDL
       {w, h}
     end
 
-    def target_supported?
-      ret = LibSDL.render_target_supported(self, texture)
-      raise Error.new("SDL_RenderTargetSupported") unless ret == 0
-      ret
+    def target_supported? : Bool
+      ret = LibSDL.render_target_supported(self)
+      raise Error.new("SDL_RenderTargetSupported") unless ret == 1
+      ret == 1
     end
 
-    def target=(texture : Texture)
+    def target=(texture : Texture?)
       ret = LibSDL.set_render_target(self, texture)
-      # raise Error.new("SDL_SetRenderTarget") unless ret == 0
+      raise Error.new("SDL_SetRenderTarget") unless ret == 0
       ret
     end
 
@@ -120,6 +122,7 @@ module SDL
 
     def draw_geometry(tex : Texture?, vertices : Array, indices : Array)
       ret = LibSDL.render_draw_geometry(self, tex, vertices, vertices.size, indices, indices.size)
+      # return unless ret == 0
       raise Error.new("SDL_RenderDrawGeometry") unless ret == 0
     end
 
@@ -248,8 +251,20 @@ module SDL
       raise SDL::Error.new("SDL_RenderReadPixels") unless ret == 0
     end
 
+    # Redirect each RenderCopy to a specified texture
+    def with_texture(texture : Texture, &)
+      # Do not render to texture if we are presenting
+      t = self.target
+      raise "Unexpected no target texture found" unless t
+      self.target = texture
+      yield
+    ensure
+      self.target = t if t
+    end
+
     # Render the target texture to the screen.
     def present
+      # Do not present if we are rendering to texture
       LibSDL.render_present(self)
     end
 

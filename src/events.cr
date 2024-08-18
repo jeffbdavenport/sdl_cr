@@ -49,12 +49,12 @@ module SDL
         _event.keysym.mod
       end
 
-      def sym
-        _event.keysym.sym
+      def key
+        _event.keysym.key
       end
 
-      def scancode
-        _event.keysym.scancode
+      def scan
+        _event.keysym.scan
       end
     end
 

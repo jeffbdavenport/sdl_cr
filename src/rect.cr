@@ -10,7 +10,21 @@ module SDL
       SDL::Point.new({{x}}, {{y}})
     end
 
-    def initialize(@x, @y)
+    def initialize(x : Number, y : Number)
+      @x = x.to_i32
+      @y = y.to_i32
+    end
+
+    def -(other : Point)
+      self.class.new(x - other.x, y - other.y)
+    end
+
+    def +(other : Point)
+      self.class.new(x + other.x, y + other.y)
+    end
+
+    def *(other : Point)
+      self.class.new(x * other.x, y * other.y)
     end
   end
 
@@ -19,7 +33,21 @@ module SDL
     property x : Float32
     property y : Float32
 
-    def initialize(@x, @y)
+    def initialize(x : Number, y : Number)
+      @x = x.to_f32
+      @y = y.to_f32
+    end
+
+    def -(other : FPoint)
+      self.class.new(x - other.x, y - other.y)
+    end
+
+    def +(other : FPoint)
+      self.class.new(x + other.x, y + other.y)
+    end
+
+    def *(other : FPoint)
+      self.class.new(x * other.x, y * other.y)
     end
   end
 
