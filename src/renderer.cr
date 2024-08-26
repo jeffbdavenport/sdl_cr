@@ -29,6 +29,9 @@ module SDL
       raise Error.new("SDL_CreateRenderer") unless @renderer
     end
 
+    # # Do not destroy texture because it may exist somewhere else!
+    # def finalize
+    # end
     def finalize
       LibSDL.destroy_renderer(self)
     end
@@ -51,15 +54,15 @@ module SDL
       ret == 1
     end
 
-    def target=(texture : Texture?)
+    def target=(texture : LibSDL::Texture*?)
       ret = LibSDL.set_render_target(self, texture)
       raise Error.new("SDL_SetRenderTarget") unless ret == 0
       ret
     end
 
-    def target
-      texture = LibSDL.get_render_target(self)
-      Texture.new(texture)
+    def target : LibSDL::Texture*
+      LibSDL.get_render_target(self)
+      # Texture.new(texture)
     end
 
     def logical_size=(xy)
@@ -255,11 +258,14 @@ module SDL
     def with_texture(texture : Texture, &)
       # Do not render to texture if we are presenting
       t = self.target
-      raise "Unexpected no target texture found" unless t
-      self.target = texture
+      self.target = texture.to_unsafe
       yield
     ensure
-      self.target = t if t
+      if t
+        self.target = t
+      else
+        self.target = nil
+      end
     end
 
     # Render the target texture to the screen.
